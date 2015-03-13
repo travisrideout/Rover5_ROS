@@ -1,0 +1,16 @@
+<package>
+  <description brief="Rover5_ROS">
+
+     Rover5_ROS
+
+  </description>
+  <author>Travis</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/Rover5_ROS</url>
+  <depend package="roscpp"/>
+  <depend package="joy"/>
+
+</package>
+
+
