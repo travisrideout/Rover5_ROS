@@ -12,7 +12,7 @@
 #include <sensor_msgs/Joy.h>
 #include "Rover5_ROS/rover.h"
 
-extern Rover5_ROS::rover rover_msg;
+//extern Rover5_ROS::rover rover_msg;
 
 class Joy_TeleOp
 {
@@ -24,6 +24,8 @@ private:
   void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
 
   ros::NodeHandle nh_;
+
+  Rover5_ROS::rover rover_msg;
 
   int left_CMD, right_CMD;
   double l_scale_, a_scale_;

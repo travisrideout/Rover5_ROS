@@ -19,7 +19,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #uncomment if you have defined messages
 rosbuild_genmsg()
 #uncomment if you have defined services
-#rosbuild_gensrv()
+rosbuild_gensrv()
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
@@ -29,7 +29,9 @@ rosbuild_genmsg()
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 
-rosbuild_add_executable(rover5_ros src/rover5_ros.cpp src/RoverServerSocket.cpp src/joy_teleop.cpp src/sonar_filter.cpp)
+rosbuild_add_executable(rover5_ros src/rover5_ros.cpp src/joy_teleop.cpp )
+rosbuild_add_executable(rover5_coms src/rover5_coms.cpp src/sonar_filter.cpp )
+
 target_link_libraries(rover5_ros ${catkin_LIBRARIES})
 
 

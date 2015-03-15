@@ -1,5 +1,12 @@
 <launch>
 
+<!-- Rover5 - Main Node" -->
+  <node pkg="Rover5_ROS"
+	type="rover5_ros"
+	name="rover5_ros"
+	output="screen">
+  </node>
+
  <!-- joy node -->
   <node respawn="true" pkg="joy"
         type="joy_node" name="rover5_joy" >
@@ -13,10 +20,11 @@
   <param name="scale_linear" value="2" type="double"/>
   <param name="scale_angular" value="2" type="double"/>
 
-<!-- type="rover5_teleop_joy" -->
-  <node pkg="Rover5_ROS" 	
-	type="rover5_ros"
-	name="teleop"
-	output="screen"/>
+<!-- server node -->
+  <node pkg="Rover5_ROS"
+		type="rover5_coms"
+		name="rover5_coms"
+		output="screen" >
+  </node>
 
 </launch>

@@ -64,12 +64,12 @@ void* RoverServerSocket::StartServer(){
     		ParseRecvPacket(msgRecv, msgRecvData);
     		UseMessageData();
     		loop_rate.sleep();
-    		pthread_mutex_lock(&lock);
+    		//pthread_mutex_lock(&lock);
     		PackSendData();
     		PrepareSendPacket(msgSend, msgSendData);
     		send(client_sock, msgSend, PACKET_SIZE, 0);
     		//std::cout << msgSend << std::endl;
-    		pthread_mutex_unlock(&lock);
+    		//pthread_mutex_unlock(&lock);
     	}
 
     	if(read_size == 0)
