@@ -4,24 +4,24 @@
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "Rover5_ROS/rover.h"
-#include <Rover5_ROS/sonar_filter.h>
+#include "Rover5_ROS/rover_out.h"
+#include "Rover5_ROS/rover_in.h"
 
 void StartServer();
 int Listen();
 int Transmit();
 int UseMessageData();
-void PackSendData(const Rover5_ROS::rover::ConstPtr&);
+void PackSendData(const Rover5_ROS::rover_in::ConstPtr&);
 
 ros::Publisher rover_pub;
 ros::Subscriber rover_sub;
 
-Sonar_Filter SF;
 data_struct msgSendData;
 data_struct msgRecvData;
 char msgSend[PACKET_SIZE];
 char msgRecv[PACKET_SIZE];
-Rover5_ROS::rover rover_msg1;
+Rover5_ROS::rover_in rover_msg_in;
+Rover5_ROS::rover_out rover_msg_out;
 int socket_desc , client_sock , c , read_size;
 struct sockaddr_in server , client;
 
@@ -53,50 +53,6 @@ void StartServer(){
         //return 1;
     }
     std::cout << "bind done" << std::endl;
-
-    /*while(1){
-    	//Listen
-    	listen(socket_desc , 3);
-
-    	//Accept and incoming connection
-    	std::cout<< "Waiting for incoming connections..." << std::endl;
-    	c = sizeof(struct sockaddr_in);
-
-    	//accept connection from an incoming client
-    	client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
-    	if (client_sock < 0)
-    	{
-    		std::cerr << "accept failed" << std::endl;
-    		//return 1;
-    	}
-    	std::cout << "Connection accepted" << std::endl;
-
-    	ros::Rate loop_rate(60);
-
-    	//Receive a message from client
-    	while( (read_size = recv(client_sock, msgRecv, PACKET_SIZE, 0)) > 0 )
-    	{
-    		ParseRecvPacket(msgRecv, msgRecvData);
-    		UseMessageData();
-    		loop_rate.sleep();
-    		//pthread_mutex_lock(&lock);
-    		//PackSendData();
-
-    		PrepareSendPacket(msgSend, msgSendData);
-    		send(client_sock, msgSend, PACKET_SIZE, 0);
-    		//std::cout << msgSend << std::endl;
-    		//pthread_mutex_unlock(&lock);
-    	}
-
-    	if(read_size == 0)
-    	{
-    		std::cerr << "Client disconnected" << std::endl;
-    	}
-    	else if(read_size == -1)
-    	{
-    		std::cerr << "recv failed" << std::endl;
-    	}
-    }*/
 
     return;
 }
@@ -145,22 +101,17 @@ int Transmit(){
 
 int UseMessageData(){
 	//rover_msg1.stamp = ros::Time::now();
-	rover_msg1.header.frame_id = "/world";
-	rover_msg1.pingDist = SF.AveragingFilter(msgRecvData.pingDist);
-	rover_msg1.lPos = msgRecvData.lPos;
-	rover_msg1.rPos = msgRecvData.rPos;
-	rover_msg1.imuXAccel = msgRecvData.imuXAccel;
-	rover_msg1.imuYAccel = msgRecvData.imuYAccel;
-	rover_msg1.imuZAccel = msgRecvData.imuZAccel;
+	rover_msg_out.header.frame_id = "/world";
+	rover_msg_out.pingDist = msgRecvData.pingDist;
+	rover_msg_out.lPos = msgRecvData.lPos;
+	rover_msg_out.rPos = msgRecvData.rPos;
+	rover_msg_out.imuXAccel = msgRecvData.imuXAccel;
+	rover_msg_out.imuYAccel = msgRecvData.imuYAccel;
+	rover_msg_out.imuZAccel = msgRecvData.imuZAccel;
 
-	rover_msg1.lDutyCmd = msgSendData.lDutyCmd;
-	rover_msg1.rDutyCmd = msgSendData.rDutyCmd;
-	rover_msg1.lDirCmd = msgSendData.lDirCmd;
-	rover_msg1.rDirCmd = msgSendData.rDirCmd;
+	rover_pub.publish(rover_msg_out);
 
-	rover_pub.publish(rover_msg1);
-
-	std::cout << "\tPing = " << rover_msg1.pingDist
+	std::cout << "\tPing = " << rover_msg_out.pingDist
 			<< "\tL_POS = " << msgRecvData.lPos
 			<< "\tR_POS = " << msgRecvData.rPos
 			<< "\tX accel = " <<  (float)msgRecvData.imuXAccel/16384
@@ -170,7 +121,7 @@ int UseMessageData(){
 	return 0;
 }
 
-void PackSendData(const Rover5_ROS::rover::ConstPtr& msg){
+void PackSendData(const Rover5_ROS::rover_in::ConstPtr& msg){
 	msgSendData.lDutyCmd = msg->lDutyCmd;
 	msgSendData.rDutyCmd = msg->rDutyCmd;
 	msgSendData.lDirCmd = msg->lDirCmd;
@@ -186,8 +137,8 @@ int main(int argc, char** argv){
 	ros::NodeHandle n;
 
 	InitializeMessageData(msgSendData);
-	rover_pub = n.advertise<Rover5_ROS::rover>("RoverMSG", 10);
-	rover_sub = n.subscribe<Rover5_ROS::rover>("RoverMSG", 10, &PackSendData);
+	rover_pub = n.advertise<Rover5_ROS::rover_out>("RoverMSGout", 10);
+	rover_sub = n.subscribe<Rover5_ROS::rover_in>("RoverMSGin", 10, &PackSendData);
 
 	StartServer();
 	Listen();
@@ -196,6 +147,6 @@ int main(int argc, char** argv){
 	while(ros::ok()){
 		Transmit();
 		loop_rate.sleep();
-		//ros::spinOnce();
+		ros::spinOnce();
 	}
 }

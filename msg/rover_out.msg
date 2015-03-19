@@ -1,10 +1,7 @@
-# IMU.msg
+# rover_out.msg
+# used to pass variables from the Rover5 platform to the ROS environment  
 
 Header header
-uint16 lDirCmd
-uint16 rDirCmd
-uint16 lDutyCmd
-uint16 rDutyCmd
 uint16 lSpeedAct
 uint16 rSpeedAct
 uint16 pingDist

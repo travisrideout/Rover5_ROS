@@ -14,8 +14,6 @@
 #include <iomanip>			// for hex
 #include <stdio.h>			// for sscanf
 
-
-
 #define PACKET_SIZE		68		//52	// total # of characters in packet, characters because socket sends char[]
 #define BLOCK_SIZE		4 			// # of characters per variable
 #define PACKET_START 	"STRT"		// start string used for checking packet start
