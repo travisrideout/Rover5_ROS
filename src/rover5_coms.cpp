@@ -82,8 +82,6 @@ int Transmit(){
 	{
 		ParseRecvPacket(msgRecv, msgRecvData);
 		UseMessageData();
-		//PackSendData();
-		//ros::spinOnce();
 		PrepareSendPacket(msgSend, msgSendData);
 		send(client_sock, msgSend, PACKET_SIZE, 0);
 	}else if(read_size == 0)
@@ -100,7 +98,7 @@ int Transmit(){
 }
 
 int UseMessageData(){
-	//rover_msg1.stamp = ros::Time::now();
+	rover_msg_out.header.stamp = ros::Time::now();
 	rover_msg_out.header.frame_id = "/world";
 	rover_msg_out.pingDist = msgRecvData.pingDist;
 	rover_msg_out.lPos = msgRecvData.lPos;
@@ -111,12 +109,12 @@ int UseMessageData(){
 
 	rover_pub.publish(rover_msg_out);
 
-	std::cout << "\tPing = " << rover_msg_out.pingDist
+	/*std::cout << "\tPing = " << rover_msg_out.pingDist
 			<< "\tL_POS = " << msgRecvData.lPos
 			<< "\tR_POS = " << msgRecvData.rPos
 			<< "\tX accel = " <<  (float)msgRecvData.imuXAccel/16384
 			<< "\tY accel = " << (float)msgRecvData.imuYAccel/16384
-			<< "\tZ accel = " << (float)msgRecvData.imuZAccel/16384 << std::endl;
+			<< "\tZ accel = " << (float)msgRecvData.imuZAccel/16384 << std::endl;*/
 
 	return 0;
 }
@@ -143,7 +141,7 @@ int main(int argc, char** argv){
 	StartServer();
 	Listen();
 
-	ros::Rate loop_rate(60);
+	ros::Rate loop_rate(30);
 	while(ros::ok()){
 		Transmit();
 		loop_rate.sleep();

@@ -10,7 +10,7 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
-#include "Rover5_ROS/rover_in.h"
+#include <geometry_msgs/TwistWithCovariance.h>
 
 class Joy_TeleOp
 {
@@ -23,12 +23,10 @@ private:
 
   ros::NodeHandle nh_;
 
-  Rover5_ROS::rover_in rover_msg_in;
-
   int left_CMD, right_CMD;
+  float width;
   double l_scale_, a_scale_;
-  //ros::Publisher vel_pub_;
-  ros::Publisher rover_pub;
+  ros::Publisher vel_pub;
   ros::Subscriber joy_sub_;
 
 };

@@ -29,8 +29,9 @@ rosbuild_genmsg()
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 
-rosbuild_add_executable(rover5_ros src/rover5_ros.cpp src/joy_teleop.cpp )
+rosbuild_add_executable(rover5_ros src/rover5_ros.cpp  )
 rosbuild_add_executable(rover5_coms src/rover5_coms.cpp src/sonar_filter.cpp )
+rosbuild_add_executable(rover5_odom src/odometry.cpp src/joy_teleop.cpp )
 
 target_link_libraries(rover5_ros ${catkin_LIBRARIES})
 

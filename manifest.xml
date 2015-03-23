@@ -10,7 +10,9 @@
   <url>http://ros.org/wiki/Rover5_ROS</url>
   <depend package="roscpp"/>
   <depend package="joy"/>
-
+  <depend package="tf"/>
+  <depend package="nav_msgs"/>
+  
 </package>
 
 
