@@ -10,14 +10,17 @@
 Odometry::Odometry():
 	ratio(1620),width(0.01905),
 	x(0.0),y(0.0),prev_x(0.0),prev_y(0.0),th(0.0),prev_th(0.0),now(0.0),then(0.0), elapsed(0.0),
-	l_enc(0.0), r_enc(0.0), prev_l_enc(0.0), prev_r_enc(0.0),
+	l_enc(0), r_enc(0), prev_l_enc(0), prev_r_enc(0),
 	dx(0.0),dth(0.0){
 	rolloverMax = 0.95*std::numeric_limits<int>::max();
 	rolloverMin = 0.95*std::numeric_limits<int>::min();
 
+	//Publishers
 	odom_pub = nHandle.advertise<nav_msgs::Odometry>("Odom", 10);
-	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
 	rover_pub = nHandle.advertise<Rover5_ROS::rover_in>("RoverMSGin", 10);
+
+	//Subscribers
+	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
 	twist_sub = nHandle.subscribe<geometry_msgs::TwistWithCovariance>("rover_cmd_vel", 10, &Odometry::Twist_To_Diff, this);
 }
 
@@ -58,19 +61,13 @@ void Odometry::Update_Odom(){
 		elapsed = (now-then).toSec();
 
 		//calculate odometry
-		float d_left = (l_enc - prev_l_enc)/ratio;		//distance traveled by each track
-		float d_right = (r_enc - prev_r_enc)/ratio;
-		prev_l_enc = l_enc;
-		prev_r_enc = r_enc;
-
-		std::cout << "d_left = " << d_left << ", d_right = " << d_right;
+		double d_left = (double(l_enc) - prev_l_enc)/ratio;		//distance traveled by each track
+		double d_right = (double(r_enc) - prev_r_enc)/ratio;
 
 		//distance traveled is the average of the two wheels
-		float d = ( d_left + d_right ) / 2;
+		double d = ( d_left + d_right ) / 2;
 		//this approximation works (in radians) for small angles
-		float th_temp = ( d_right - d_left ) / width;
-
-		std::cout << " th_temp = " << th_temp << std::endl;
+		double th_temp = ( d_right - d_left ) / width;
 
 		//calculate velocities
 		dx = d / elapsed;
@@ -78,8 +75,8 @@ void Odometry::Update_Odom(){
 
 		if (d != 0){
 			//calculate distance traveled in x and y
-			float x_temp = cos( th_temp ) * d;
-			float y_temp = -sin( th_temp ) * d;
+			double x_temp = cos( th_temp ) * d;
+			double y_temp = -sin( th_temp ) * d;
 			//calculate the final position of the robot
 			x = x + ( cos( th ) * x_temp - sin( th ) * y_temp );
 			y = y + ( sin( th ) * x_temp + cos( th ) * y_temp );
@@ -120,7 +117,10 @@ void Odometry::Update_Odom(){
 		odom_pub.publish(odom_msg);
 	}
 
-	then = now;					//shuffle time
+	//push current values to buffers
+	then = now;
+	prev_l_enc = l_enc;
+	prev_r_enc = r_enc;
 }
 
 Odometry::~Odometry(){
