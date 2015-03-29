@@ -3,7 +3,7 @@
  <!-- joy node -->
   <node respawn="true" pkg="joy"
         type="joy_node" name="rover5_joy" >
-    <param name="dev" type="string" value="/dev/input/js1" />
+    <param name="dev" type="string" value="/dev/input/js0" />
     <param name="deadzone" value="0.12" />
   </node>
 
@@ -24,7 +24,7 @@
   <node pkg="Rover5_ROS"
 		type="rover5_odom"
 		name="rover5_odom"
-		output="screen" >
+		output="screen">
   </node>
 
 </launch>

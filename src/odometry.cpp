@@ -8,16 +8,19 @@
 #include <Rover5_ROS/odometry.h>
 
 Odometry::Odometry():
-	ratio(1620),width(0.01905),
+	ratio(1768),width(0.01905),
 	x(0.0),y(0.0),prev_x(0.0),prev_y(0.0),th(0.0),prev_th(0.0),now(0.0),then(0.0), elapsed(0.0),
 	l_enc(0.0), r_enc(0.0), prev_l_enc(0.0), prev_r_enc(0.0),
 	dx(0.0),dth(0.0){
 	rolloverMax = 0.95*std::numeric_limits<int>::max();
 	rolloverMin = 0.95*std::numeric_limits<int>::min();
 
+	//Publishers
 	odom_pub = nHandle.advertise<nav_msgs::Odometry>("Odom", 10);
-	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
 	rover_pub = nHandle.advertise<Rover5_ROS::rover_in>("RoverMSGin", 10);
+
+	//Subscribers
+	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
 	twist_sub = nHandle.subscribe<geometry_msgs::TwistWithCovariance>("rover_cmd_vel", 10, &Odometry::Twist_To_Diff, this);
 }
 
@@ -56,21 +59,14 @@ void Odometry::Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr&
 void Odometry::Update_Odom(){
 	if(now.nsec != 0 && then.nsec != 0 && now.nsec>then.nsec){
 		elapsed = (now-then).toSec();
-
 		//calculate odometry
-		float d_left = (l_enc - prev_l_enc)/ratio;		//distance traveled by each track
-		float d_right = (r_enc - prev_r_enc)/ratio;
-		prev_l_enc = l_enc;
-		prev_r_enc = r_enc;
-
-		std::cout << "d_left = " << d_left << ", d_right = " << d_right;
+		float d_left = (l_enc - prev_l_enc)/float(ratio);		//distance traveled by each track
+		float d_right = (r_enc - prev_r_enc)/float(ratio);
 
 		//distance traveled is the average of the two wheels
 		float d = ( d_left + d_right ) / 2;
 		//this approximation works (in radians) for small angles
 		float th_temp = ( d_right - d_left ) / width;
-
-		std::cout << " th_temp = " << th_temp << std::endl;
 
 		//calculate velocities
 		dx = d / elapsed;
@@ -81,13 +77,13 @@ void Odometry::Update_Odom(){
 			float x_temp = cos( th_temp ) * d;
 			float y_temp = -sin( th_temp ) * d;
 			//calculate the final position of the robot
-			x = x + ( cos( th ) * x_temp - sin( th ) * y_temp );
-			y = y + ( sin( th ) * x_temp + cos( th ) * y_temp );
+			x += ( cos( th ) * x_temp - sin( th ) * y_temp );
+			y += ( sin( th ) * x_temp + cos( th ) * y_temp );
 		}
 
 		//TODO: Should theta be limited to 1 revolution and rolled over?
 		if( th_temp != 0){
-			th = th + th_temp;
+			th += th_temp;
 		}
 
 		//pack up transform
@@ -120,7 +116,10 @@ void Odometry::Update_Odom(){
 		odom_pub.publish(odom_msg);
 	}
 
-	then = now;					//shuffle time
+	//shuffle variables into buffers
+	then = now;
+	prev_l_enc = l_enc;
+	prev_r_enc = r_enc;
 }
 
 Odometry::~Odometry(){
@@ -135,8 +134,8 @@ int main(int argc, char** argv){
 	ros::Rate loop_rate(30);
 
 	while(ros::ok()){
-		ros::spinOnce();
 		odom.Update_Odom();
+		ros::spinOnce();
 		loop_rate.sleep();
 	}
 }
