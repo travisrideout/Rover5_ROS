@@ -84,14 +84,19 @@ int Transmit(){
 		UseMessageData();
 		PrepareSendPacket(msgSend, msgSendData);
 		send(client_sock, msgSend, PACKET_SIZE, 0);
-	}else if(read_size == 0)
-	{
-		std::cerr << "Client disconnected" << std::endl;
-		Listen();
-	}
-	else if(read_size == -1)
-	{
-		std::cerr << "recv failed" << std::endl;
+	}else {
+		if(read_size == 0){
+			std::cerr << "Client disconnected" << std::endl;
+		}else if(read_size == -1){
+			std::cerr << "recv failed" << std::endl;
+		}
+		rover_msg_out.header.stamp = ros::Time::now();
+		rover_msg_out.header.frame_id = "/world";
+		rover_msg_out.lPos = 0;
+		rover_msg_out.rPos = 0;
+
+		rover_pub.publish(rover_msg_out);
+
 		Listen();
 	}
 	return 0;

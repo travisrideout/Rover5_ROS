@@ -33,12 +33,12 @@ private:
 	int rolloverMax, rolloverMin;				//encoder count roll over limits
 	int ratio;									//encoder ticks per meter
 	float width;								//robot width in meters
-	float x,y,prev_x,prev_y;					//position and previous values to compute velocities
-	float th, prev_th;							// heading angle and previous
+	double x,y,prev_x,prev_y;					//position and previous values to compute velocities
+	double th, prev_th;							// heading angle and previous
 	ros::Time now, then; 						//times to compute velocities
-	float elapsed;
+	double elapsed;
 	int l_enc, r_enc,prev_l_enc,prev_r_enc;		//encoder tick values
-	float dx,dth;								//velocities
+	double dx,dth;								//velocities
 
 	tf::Quaternion tf_quaternion;
 	geometry_msgs::Quaternion msg_quaternion;	//quaternion for transform
