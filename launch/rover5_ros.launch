@@ -27,4 +27,11 @@
 		output="screen">
   </node>
 
+<!-- imu node -->
+  <node pkg="Rover5_ROS"
+		type="rover5_imu"
+		name="rover5_imu"
+		output="screen">
+  </node>
+
 </launch>

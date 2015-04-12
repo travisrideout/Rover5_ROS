@@ -8,7 +8,7 @@
 #include <Rover5_ROS/odometry.h>
 
 Odometry::Odometry():
-	ratio(1768),width(0.01905),
+	ratio(1768),width(0.1905),
 	x(0.0),y(0.0),prev_x(0.0),prev_y(0.0),th(0.0),prev_th(0.0),now(0.0),then(0.0), elapsed(0.0),
 	l_enc(0), r_enc(0), prev_l_enc(0), prev_r_enc(0),
 	dx(0.0),dth(0.0){
@@ -16,8 +16,10 @@ Odometry::Odometry():
 	rolloverMin = 0.95*std::numeric_limits<int>::min();
 
 	//Publishers
-	odom_pub = nHandle.advertise<nav_msgs::Odometry>("Odom", 10);
+	odom_pub = nHandle.advertise<nav_msgs::Odometry>("odom", 10);
 	rover_pub = nHandle.advertise<Rover5_ROS::rover_in>("RoverMSGin", 10);
+
+	range_pub = nHandle.advertise<sensor_msgs::Range>("range", 10);
 
 	//Subscribers
 	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
@@ -29,23 +31,30 @@ void Odometry::EncCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	l_enc = msg->lPos;
 	r_enc = msg->rPos;
 	now = msg->header.stamp;
-}
 
-void Odometry::Diff_To_Twist(){
+	range_msg.header.frame_id = "range";
+	range_msg.header.stamp = msg->header.stamp;
+	range_msg.radiation_type = 0;
+	range_msg.field_of_view = 0.1;
+	range_msg.min_range = 0.05;
+	range_msg.max_range = 15;
+	range_msg.range = msg->pingDist/100;
 
+	range_pub.publish(range_msg);
 }
 
 void Odometry::Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr& twist){
 	float r_duty_temp = twist->twist.linear.x + ((width*twist->twist.angular.z)/2);
 	float l_duty_temp = twist->twist.linear.x - ((width*twist->twist.angular.z)/2);
-	if(l_duty_temp<=0){
+
+	if(l_duty_temp<0){
 		rover_msg_in.lDirCmd = 0;
-	}else{
+	}else if(l_duty_temp>0){
 		rover_msg_in.lDirCmd = 1;
 	}
-	if(r_duty_temp<=0){
+	if(r_duty_temp<0){
 		rover_msg_in.rDirCmd = 0;
-	}else{
+	}else if((r_duty_temp>0)){
 		rover_msg_in.rDirCmd = 1;
 	}
 
@@ -55,21 +64,18 @@ void Odometry::Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr&
 	rover_pub.publish(rover_msg_in);
 }
 
-
 void Odometry::Update_Odom(){
 	if(now.nsec != 0 && then.nsec != 0 && now.nsec>then.nsec){
 		elapsed = (now-then).toSec();
-		//calculate odometry
 
+		//calculate odometry
 		double d_left = (double(l_enc) - prev_l_enc)/ratio;		//distance traveled by each track
 		double d_right = (double(r_enc) - prev_r_enc)/ratio;
-
 
 		//distance traveled is the average of the two wheels
 		double d = ( d_left + d_right ) / 2;
 		//this approximation works (in radians) for small angles
-		double th_temp = ( d_right - d_left ) / width;
-
+		double th_temp = ( d_right - d_left ) / (2*width);			//divide by to to reduce errors in theta
 
 		//calculate velocities
 		dx = d / elapsed;
@@ -85,7 +91,7 @@ void Odometry::Update_Odom(){
 		}
 
 		//TODO: Should theta be limited to 1 revolution and rolled over?
-		if( th_temp != 0){
+		if(th_temp != 0){
 			th += th_temp;
 		}
 
@@ -103,6 +109,16 @@ void Odometry::Update_Odom(){
 		//send the transform
 		odomBroadcaster.sendTransform(odom_tf);
 
+		range_tf.header.stamp = now;
+		range_tf.header.frame_id = "range";
+		range_tf.child_frame_id = "odom";
+		range_tf.transform.translation.x = 0;
+		range_tf.transform.translation.y = 0;
+		range_tf.transform.translation.z = 0;
+
+		//send the transform
+		rangeBroadcaster.sendTransform(range_tf);
+
 		//pack the odometry
 		odom_msg.header.stamp = now;
 		odom_msg.header.frame_id = "odom";
@@ -115,10 +131,17 @@ void Odometry::Update_Odom(){
 		odom_msg.twist.twist.linear.y = 0;
 		odom_msg.twist.twist.angular.z = dth;
 
+		//Covariance values. Total guess
+		odom_msg.pose.covariance[0] = 0.01;
+		odom_msg.pose.covariance[7]  = 0.01;
+		odom_msg.pose.covariance[14] = 99999;
+		odom_msg.pose.covariance[21] = 99999;
+		odom_msg.pose.covariance[28] = 99999;
+		odom_msg.pose.covariance[35] = 0.01;
+
 		//send the odometry
 		odom_pub.publish(odom_msg);
 	}
-
 
 	//push current values to buffers
 	then = now;

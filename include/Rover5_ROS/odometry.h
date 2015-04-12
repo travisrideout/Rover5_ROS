@@ -19,11 +19,12 @@
 #include <Rover5_ROS/rover_out.h>
 #include <Rover5_ROS/rover_in.h>
 #include <Rover5_ROS/joy_teleop.h>
+#include <sensor_msgs/Range.h>
 
 class Odometry{
 public:
 	Odometry();
-	void Diff_To_Twist();
+
 	void Update_Odom();
 	virtual ~Odometry();
 private:
@@ -47,6 +48,8 @@ private:
 
 	ros::Publisher odom_pub;
 	ros::Publisher rover_pub;
+
+
 	ros::Subscriber rover_sub;
 	tf::TransformBroadcaster odomBroadcaster;
 	ros::Subscriber twist_sub;
@@ -54,6 +57,11 @@ private:
 	ros::NodeHandle nHandle;
 
 	nav_msgs::Odometry odom_msg;
+
+	ros::Publisher range_pub;
+	sensor_msgs::Range range_msg;
+	geometry_msgs::TransformStamped range_tf;	//transform object
+	tf::TransformBroadcaster rangeBroadcaster;
 };
 
 #endif /* INCLUDE_ROVER5_ROS_ODOMETRY_H_ */

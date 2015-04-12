@@ -7,7 +7,7 @@ import struct
 import std_msgs.msg
 
 class rover_out(genpy.Message):
-  _md5sum = "953c7329d13043984418d2f500441304"
+  _md5sum = "9911ad84eb7af075352ae23aa16c2296"
   _type = "Rover5_ROS/rover_out"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """# rover_out.msg
@@ -20,6 +20,9 @@ uint16 pingDist
 int16 imuXAccel
 int16 imuYAccel
 int16 imuZAccel
+int16 imuXGyro
+int16 imuYGyro
+int16 imuZGyro
 int32 lPos
 int32 rPos
 
@@ -43,8 +46,8 @@ time stamp
 string frame_id
 
 """
-  __slots__ = ['header','lSpeedAct','rSpeedAct','pingDist','imuXAccel','imuYAccel','imuZAccel','lPos','rPos']
-  _slot_types = ['std_msgs/Header','uint16','uint16','uint16','int16','int16','int16','int32','int32']
+  __slots__ = ['header','lSpeedAct','rSpeedAct','pingDist','imuXAccel','imuYAccel','imuZAccel','imuXGyro','imuYGyro','imuZGyro','lPos','rPos']
+  _slot_types = ['std_msgs/Header','uint16','uint16','uint16','int16','int16','int16','int16','int16','int16','int32','int32']
 
   def __init__(self, *args, **kwds):
     """
@@ -54,7 +57,7 @@ string frame_id
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,lSpeedAct,rSpeedAct,pingDist,imuXAccel,imuYAccel,imuZAccel,lPos,rPos
+       header,lSpeedAct,rSpeedAct,pingDist,imuXAccel,imuYAccel,imuZAccel,imuXGyro,imuYGyro,imuZGyro,lPos,rPos
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -77,6 +80,12 @@ string frame_id
         self.imuYAccel = 0
       if self.imuZAccel is None:
         self.imuZAccel = 0
+      if self.imuXGyro is None:
+        self.imuXGyro = 0
+      if self.imuYGyro is None:
+        self.imuYGyro = 0
+      if self.imuZGyro is None:
+        self.imuZGyro = 0
       if self.lPos is None:
         self.lPos = 0
       if self.rPos is None:
@@ -89,6 +98,9 @@ string frame_id
       self.imuXAccel = 0
       self.imuYAccel = 0
       self.imuZAccel = 0
+      self.imuXGyro = 0
+      self.imuYGyro = 0
+      self.imuZGyro = 0
       self.lPos = 0
       self.rPos = 0
 
@@ -116,7 +128,7 @@ string frame_id
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_3H3h2i.pack(_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.lPos, _x.rPos))
+      buff.write(_struct_3H6h2i.pack(_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.imuXGyro, _x.imuYGyro, _x.imuZGyro, _x.lPos, _x.rPos))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -144,8 +156,8 @@ string frame_id
         self.header.frame_id = str[start:end]
       _x = self
       start = end
-      end += 20
-      (_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.lPos, _x.rPos,) = _struct_3H3h2i.unpack(str[start:end])
+      end += 26
+      (_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.imuXGyro, _x.imuYGyro, _x.imuZGyro, _x.lPos, _x.rPos,) = _struct_3H6h2i.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -170,7 +182,7 @@ string frame_id
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_3H3h2i.pack(_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.lPos, _x.rPos))
+      buff.write(_struct_3H6h2i.pack(_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.imuXGyro, _x.imuYGyro, _x.imuZGyro, _x.lPos, _x.rPos))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -199,12 +211,12 @@ string frame_id
         self.header.frame_id = str[start:end]
       _x = self
       start = end
-      end += 20
-      (_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.lPos, _x.rPos,) = _struct_3H3h2i.unpack(str[start:end])
+      end += 26
+      (_x.lSpeedAct, _x.rSpeedAct, _x.pingDist, _x.imuXAccel, _x.imuYAccel, _x.imuZAccel, _x.imuXGyro, _x.imuYGyro, _x.imuZGyro, _x.lPos, _x.rPos,) = _struct_3H6h2i.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
-_struct_3H3h2i = struct.Struct("<3H3h2i")
 _struct_3I = struct.Struct("<3I")
+_struct_3H6h2i = struct.Struct("<3H6h2i")

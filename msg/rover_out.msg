@@ -8,6 +8,9 @@ uint16 pingDist
 int16 imuXAccel
 int16 imuYAccel
 int16 imuZAccel
+int16 imuXGyro
+int16 imuYGyro
+int16 imuZGyro
 int32 lPos
 int32 rPos
 

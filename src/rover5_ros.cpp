@@ -1,6 +1,5 @@
 #include <ros/ros.h>
-#include <Rover5_ROS/Rover5Coms.h>
-
+#include <Rover5Coms.h>
 
 int main(int argc, char** argv)
 {

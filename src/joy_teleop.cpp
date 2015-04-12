@@ -6,7 +6,7 @@
  */
 #include <Rover5_ROS/joy_teleop.h>
 
-Joy_TeleOp::Joy_TeleOp():left_CMD(1),right_CMD(4),width(0.01905){
+Joy_TeleOp::Joy_TeleOp():left_CMD(1),right_CMD(4),width(0.1905){
 	nh_.param("axis_left", left_CMD, left_CMD);
 	nh_.param("axis_right", right_CMD, right_CMD);
 	nh_.param("scale_angular", a_scale_, a_scale_);
