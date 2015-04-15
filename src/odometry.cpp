@@ -19,8 +19,6 @@ Odometry::Odometry():
 	odom_pub = nHandle.advertise<nav_msgs::Odometry>("odom", 10);
 	rover_pub = nHandle.advertise<Rover5_ROS::rover_in>("RoverMSGin", 10);
 
-	range_pub = nHandle.advertise<sensor_msgs::Range>("range", 10);
-
 	//Subscribers
 	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
 	twist_sub = nHandle.subscribe<geometry_msgs::TwistWithCovariance>("rover_cmd_vel", 10, &Odometry::Twist_To_Diff, this);
@@ -31,16 +29,6 @@ void Odometry::EncCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	l_enc = msg->lPos;
 	r_enc = msg->rPos;
 	now = msg->header.stamp;
-
-	range_msg.header.frame_id = "range";
-	range_msg.header.stamp = msg->header.stamp;
-	range_msg.radiation_type = 0;
-	range_msg.field_of_view = 0.1;
-	range_msg.min_range = 0.05;
-	range_msg.max_range = 15;
-	range_msg.range = msg->pingDist/100;
-
-	range_pub.publish(range_msg);
 }
 
 void Odometry::Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr& twist){
@@ -108,16 +96,6 @@ void Odometry::Update_Odom(){
 
 		//send the transform
 		odomBroadcaster.sendTransform(odom_tf);
-
-		range_tf.header.stamp = now;
-		range_tf.header.frame_id = "range";
-		range_tf.child_frame_id = "odom";
-		range_tf.transform.translation.x = 0;
-		range_tf.transform.translation.y = 0;
-		range_tf.transform.translation.z = 0;
-
-		//send the transform
-		rangeBroadcaster.sendTransform(range_tf);
 
 		//pack the odometry
 		odom_msg.header.stamp = now;

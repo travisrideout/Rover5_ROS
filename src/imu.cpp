@@ -64,7 +64,6 @@ void IMU::IMUCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	imu_msg.orientation.w=quat2.getW();
 
 	imu_pub.publish(imu_msg);
-
 }
 
 IMU::~IMU(){

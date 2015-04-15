@@ -24,9 +24,9 @@
 class Odometry{
 public:
 	Odometry();
-
 	void Update_Odom();
 	virtual ~Odometry();
+
 private:
 	void EncCallback(const Rover5_ROS::rover_out::ConstPtr&);
 	void Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr&);
@@ -49,7 +49,6 @@ private:
 	ros::Publisher odom_pub;
 	ros::Publisher rover_pub;
 
-
 	ros::Subscriber rover_sub;
 	tf::TransformBroadcaster odomBroadcaster;
 	ros::Subscriber twist_sub;
@@ -58,10 +57,6 @@ private:
 
 	nav_msgs::Odometry odom_msg;
 
-	ros::Publisher range_pub;
-	sensor_msgs::Range range_msg;
-	geometry_msgs::TransformStamped range_tf;	//transform object
-	tf::TransformBroadcaster rangeBroadcaster;
 };
 
 #endif /* INCLUDE_ROVER5_ROS_ODOMETRY_H_ */

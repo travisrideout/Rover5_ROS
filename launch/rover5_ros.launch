@@ -34,4 +34,11 @@
 		output="screen">
   </node>
 
+<!-- sonar node -->
+  <node pkg="Rover5_ROS"
+		type="rover5_sonar"
+		name="rover5_sonar"
+		output="screen">
+  </node>
+
 </launch>
