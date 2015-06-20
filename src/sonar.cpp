@@ -19,7 +19,7 @@ void Sonar::PingCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	range_msg.field_of_view = 0.1;
 	range_msg.min_range = 0.05;
 	range_msg.max_range = 15;
-	range_msg.range = msg->pingDist/100;
+	range_msg.range = msg->pingDist/100;	//convert from cm to meters
 
 	range_pub.publish(range_msg);
 

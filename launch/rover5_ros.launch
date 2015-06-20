@@ -1,8 +1,10 @@
 <launch>
 
  <!-- joy node -->
-  <node respawn="true" pkg="joy"
-        type="joy_node" name="rover5_joy" >
+  <node respawn="true"
+		pkg="joy"
+        type="joy_node"
+        name="rover5_joy" >
     <param name="dev" type="string" value="/dev/input/js0" />
     <param name="deadzone" value="0.12" />
   </node>
@@ -39,6 +41,15 @@
 		type="rover5_sonar"
 		name="rover5_sonar"
 		output="screen">
+  </node>
+
+<param name="robot_description" command="cat $(find Rover5_ROS)/urdf/rover5.urdf" />
+
+<!-- RVIS -->
+  <node pkg="rviz"
+		type="rviz"
+		name="modelvisualisation"
+		output="screen" >
   </node>
 
 </launch>
