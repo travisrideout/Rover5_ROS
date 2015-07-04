@@ -83,39 +83,27 @@ void Odometry::Update_Odom(){
 			th += th_temp;
 		}
 
-		//pack up transform
-		tf_quaternion = tf::createQuaternionFromYaw(th);
-		tf::quaternionTFToMsg(tf_quaternion, msg_quaternion);
-		odom_tf.header.stamp = now;
-		odom_tf.header.frame_id = "odom";
-		odom_tf.child_frame_id = "base_link";
-		odom_tf.transform.translation.x = x;
-		odom_tf.transform.translation.y = y;
-		odom_tf.transform.translation.z = 0.0;
-		odom_tf.transform.rotation = msg_quaternion;
-
-		//send the transform
-		odomBroadcaster.sendTransform(odom_tf);
-
 		//pack the odometry
 		odom_msg.header.stamp = now;
 		odom_msg.header.frame_id = "odom";
+		odom_msg.child_frame_id = "base_footprint";
 		odom_msg.pose.pose.position.x = x;
 		odom_msg.pose.pose.position.y = y;
 		odom_msg.pose.pose.position.z = 0;
+		tf_quaternion = tf::createQuaternionFromYaw(th);
+		tf::quaternionTFToMsg(tf_quaternion, msg_quaternion);
 		odom_msg.pose.pose.orientation = msg_quaternion;
-		odom_msg.child_frame_id = "base_link";
 		odom_msg.twist.twist.linear.x = dx;
 		odom_msg.twist.twist.linear.y = 0;
 		odom_msg.twist.twist.angular.z = dth;
 
 		//Covariance values. Total guess
-		odom_msg.pose.covariance[0] = 0.01;
-		odom_msg.pose.covariance[7]  = 0.01;
-		odom_msg.pose.covariance[14] = 99999;
-		odom_msg.pose.covariance[21] = 99999;
-		odom_msg.pose.covariance[28] = 99999;
-		odom_msg.pose.covariance[35] = 0.01;
+		odom_msg.pose.covariance[0]  = 0.001;
+		odom_msg.pose.covariance[7]  = 0.001;
+		odom_msg.pose.covariance[14] = 100000;
+		odom_msg.pose.covariance[21] = 100000;
+		odom_msg.pose.covariance[28] = 100000;
+		odom_msg.pose.covariance[35] = 100;
 
 		//send the odometry
 		odom_pub.publish(odom_msg);

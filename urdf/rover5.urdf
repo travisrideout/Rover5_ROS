@@ -1,6 +1,6 @@
 <robot name="rover5">
   <!-- BASE_LINK -->
-  <link name="base_link">
+  <link name="base_footprint">
     <visual>
       <origin xyz="-0.1225 0.1555 0.074" rpy="0 0 0" />
       <geometry>

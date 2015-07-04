@@ -27,13 +27,8 @@ private:
 
 	ros::NodeHandle nHandle;
 
-	tf::Quaternion tf_quaternion;
-	geometry_msgs::Quaternion msg_quaternion;	//quaternion for transform
-
 	ros::Publisher range_pub;
 	sensor_msgs::Range range_msg;
-	geometry_msgs::TransformStamped range_tf;	//transform object
-	tf::TransformBroadcaster rangeBroadcaster;
 
 };
 

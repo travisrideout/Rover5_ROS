@@ -36,6 +36,7 @@ rosbuild_add_executable(rover5_coms src/rover5_coms.cpp )
 rosbuild_add_executable(rover5_odom src/odometry.cpp src/joy_teleop.cpp )
 rosbuild_add_executable(rover5_imu src/imu.cpp )
 rosbuild_add_executable(rover5_sonar src/sonar.cpp )
+rosbuild_add_executable(rover5_map src/map.cpp )
 
 target_link_libraries(rover5_coms ${catkin_LIBRARIES})
 

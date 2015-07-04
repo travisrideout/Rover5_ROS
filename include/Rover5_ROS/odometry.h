@@ -43,14 +43,14 @@ private:
 
 	tf::Quaternion tf_quaternion;
 	geometry_msgs::Quaternion msg_quaternion;	//quaternion for transform
-	geometry_msgs::TransformStamped odom_tf;	//transform object
 	Rover5_ROS::rover_in rover_msg_in;			//rover input object
 
+	//Publishers
 	ros::Publisher odom_pub;
 	ros::Publisher rover_pub;
 
+	//Subscribers
 	ros::Subscriber rover_sub;
-	tf::TransformBroadcaster odomBroadcaster;
 	ros::Subscriber twist_sub;
 
 	ros::NodeHandle nHandle;
