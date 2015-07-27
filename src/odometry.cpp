@@ -8,10 +8,9 @@
 #include <Rover5_ROS/odometry.h>
 
 Odometry::Odometry():
-	ratio(1768),width(0.1905),
 	x(0.0),y(0.0),prev_x(0.0),prev_y(0.0),th(0.0),prev_th(0.0),now(0.0),then(0.0), elapsed(0.0),
-	l_enc(0), r_enc(0), prev_l_enc(0), prev_r_enc(0),
-	dx(0.0),dth(0.0){
+	l_enc(0), r_enc(0), prev_l_enc(0), prev_r_enc(0), dx(0.0),dth(0.0){
+
 	rolloverMax = 0.95*std::numeric_limits<int>::max();
 	rolloverMin = 0.95*std::numeric_limits<int>::min();
 
@@ -63,7 +62,7 @@ void Odometry::Update_Odom(){
 		//distance traveled is the average of the two wheels
 		double d = ( d_left + d_right ) / 2;
 		//this approximation works (in radians) for small angles
-		double th_temp = ( d_right - d_left ) / (2*width);			//divide by to to reduce errors in theta
+		double th_temp = ( d_right - d_left ) / (2*width);			//divide by 2 to reduce errors in theta
 
 		//calculate velocities
 		dx = d / elapsed;

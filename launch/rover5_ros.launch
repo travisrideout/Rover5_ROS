@@ -1,3 +1,5 @@
+<?xml version="1.0" ?>
+
 <launch>
 
  <!-- joy node -->
@@ -44,23 +46,29 @@
  <!-- costmap --> 
   <node pkg="costmap_2d" 
   		type="costmap_2d_node"
-  		name="costmap_2d_node"
-  		output="screen">  	
+  		name="costmap_2d_node">  	
     <rosparam file="$(find Rover5_ROS)/launch/costmap_params.yaml" command="load" ns="costmap" />
   </node>
 
-<!-- server node -->
+<!-- use either server node or simulator, not both -->
+<!-- server node 
   <node pkg="Rover5_ROS"
 		type="rover5_coms"
 		name="rover5_coms"
 		output="screen" >
-  </node>
+  </node> -->
+  
+ <!-- simulator node -->
+  <node pkg="Rover5_ROS"
+		type="rover5_sim"
+		name="rover5_sim"
+		output="screen" >
+  </node> 
 
 <!-- map node -->
   <node pkg="Rover5_ROS"
 		type="rover5_map"
-		name="rover5_map"
-		output="screen">
+		name="rover5_map">
   </node>
 
 <!-- odometry node -->
@@ -92,8 +100,7 @@
 <!-- RVIS -->
   <node pkg="rviz"
 		type="rviz"
-		name="modelvisualisation"
-		output="screen" >
+		name="modelvisualisation" >
   </node>
 
 </launch>
