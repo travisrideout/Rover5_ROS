@@ -10,7 +10,7 @@
 
 #include <ros/ros.h>
 #include <iostream>
-#include "Rover5_ROS/Rover5Coms.h"
+#include <Rover5Coms.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
