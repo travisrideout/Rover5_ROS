@@ -44,14 +44,14 @@ void IMU::IMUCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	gy_f = Deadband(gy_f,nom,gyro_dev);
 	gz_f = Deadband(gz_f,nom,gyro_dev);
 
-	//x&y swapped due to imu orientation on robot
+	//x&y swapped and inverted due to imu orientation on robot
 	imu_msg.linear_acceleration.x=ay_f;
 	imu_msg.linear_acceleration.y=ax_f;
 	imu_msg.linear_acceleration.z=az_f;
 
 	imu_msg.angular_velocity.x=gy_f;
-	imu_msg.angular_velocity.y=gx_f;
-	imu_msg.angular_velocity.z=gz_f;
+	imu_msg.angular_velocity.y=-gx_f;
+	imu_msg.angular_velocity.z=-gz_f;
 
 	imu_pub.publish(imu_msg);
 }

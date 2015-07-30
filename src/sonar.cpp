@@ -27,6 +27,7 @@ void Sonar::PingCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 		range_msg.range = range_msg.max_range;
 	}else if(range_msg.range<range_msg.min_range){
 		range_msg.range = range_msg.min_range;
+		return;
 	}
 
 	range_pub.publish(range_msg);

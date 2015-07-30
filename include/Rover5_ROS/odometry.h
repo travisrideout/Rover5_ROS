@@ -21,6 +21,9 @@
 #include <Rover5_ROS/joy_teleop.h>
 #include <sensor_msgs/Range.h>
 
+#define ratio	1768		//encoder ticks per meter
+#define width	0.1905		//robot width in meters
+
 class Odometry{
 public:
 	Odometry();
@@ -32,8 +35,6 @@ private:
 	void Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr&);
 
 	int rolloverMax, rolloverMin;				//encoder count roll over limits
-	int ratio;									//encoder ticks per meter
-	float width;								//robot width in meters
 	double x,y,prev_x,prev_y;					//position and previous values to compute velocities
 	double th, prev_th;							// heading angle and previous
 	ros::Time now, then; 						//times to compute velocities

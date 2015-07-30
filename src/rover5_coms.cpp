@@ -11,8 +11,7 @@ void Rover5_Coms::StartServer(){
 
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
-    if (socket_desc == -1)
-    {
+    if (socket_desc == -1){
         std::cerr << "Could not create socket" << std::endl;
     }
     std::cout<< "Socket created" << std::endl;
@@ -23,15 +22,10 @@ void Rover5_Coms::StartServer(){
     server.sin_port = htons( 12345 );
 
     //Bind
-    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        //print the error message
+    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0){
         std::cerr << "bind failed. Error" << std::endl;
-        //return 1;
     }
     std::cout << "bind done" << std::endl;
-
-    return;
 }
 
 int Rover5_Coms::Listen(){
@@ -44,8 +38,7 @@ int Rover5_Coms::Listen(){
 
 	//accept connection from an incoming client
 	client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
-	if (client_sock < 0)
-	{
+	if (client_sock < 0){
 		std::cerr << "accept failed" << std::endl;
 		return -1;
 	}
@@ -55,8 +48,7 @@ int Rover5_Coms::Listen(){
 
 int Rover5_Coms::Transmit(){
 	//Receive a message from client
-	if((read_size = recv(client_sock, msgRecv, PACKET_SIZE, 0)) > 0)
-	{
+	if((read_size = recv(client_sock, msgRecv, PACKET_SIZE, 0)) > 0){
 		ParseRecvPacket(msgRecv, msgRecvData);
 		UseMessageData();
 		PrepareSendPacket(msgSend, msgSendData);
@@ -94,17 +86,6 @@ int Rover5_Coms::UseMessageData(){
 
 	rover_pub.publish(rover_msg_out);
 
-	/*std::cout
-			<< "\tX Gyro = " <<  (float)msgRecvData.imuXGyro/131.072
-			<< "\tY Gyro = " << (float)msgRecvData.imuYGyro/131.072
-			<< "\tZ Gyro = " << (float)msgRecvData.imuZGyro/131.072 << std::endl;*/
-	/*<< "\tX Accel = " <<  (float)msgRecvData.imuXAccel/16384
-		<< "\tY Accel = " << (float)msgRecvData.imuYAccel/16384
-		<< "\tZ Accel = " << (float)msgRecvData.imuZAccel/16384
-	<< "\tPing = " << rover_msg_out.pingDist
-	<< "\tL_POS = " << msgRecvData.lPos
-	<< "\tR_POS = " << msgRecvData.rPos*/
-
 	return 0;
 }
 
@@ -113,8 +94,6 @@ void Rover5_Coms::PackSendData(const Rover5_ROS::rover_in::ConstPtr& msg){
 	msgSendData.rDutyCmd = msg->rDutyCmd;
 	msgSendData.lDirCmd = msg->lDirCmd;
 	msgSendData.rDirCmd = msg->rDirCmd;
-
-	return;
 }
 
 Rover5_Coms::~Rover5_Coms(){

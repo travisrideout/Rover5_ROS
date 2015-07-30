@@ -1,3 +1,5 @@
+<?xml version="1.0" ?>
+
 <robot name="rover5">
   <!-- BASE_LINK -->
   <link name="base_footprint">
