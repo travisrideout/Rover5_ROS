@@ -9,7 +9,7 @@
 #define INCLUDE_ROVER5_ROS_HARDWARE_SIMULATOR_H_
 
 #include <ros/ros.h>
-#include <sensor_msgs/Joy.h>
+#include <geometry_msgs/TwistWithCovariance.h>
 #include <Rover5_ROS/rover_out.h>
 #include <math.h>
 
@@ -31,7 +31,7 @@ public:
 	void RoverMSG();
 
 private:
-	void JoyCallback(const sensor_msgs::Joy::ConstPtr& joy);
+	void TwistCallback(const geometry_msgs::TwistWithCovariance& twist);
 	void OdomSim();
 	void IMUSim();
 	void RangeSim();
@@ -39,12 +39,11 @@ private:
 
 	ros::NodeHandle nh_;
 
-	ros::Subscriber joy_sub;
+	ros::Subscriber twist_sub;
 	ros::Publisher rover_pub;
 
 	Rover5_ROS::rover_out rover_msg_out;
 
-	int 	left_CMD, right_CMD;
 	double 	left_enc, right_enc;
 	int 	XAccel,YAccel,ZAccel,XGyro,YGyro,ZGyro;
 	int 	ping;

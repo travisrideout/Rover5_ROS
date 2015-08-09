@@ -14,6 +14,7 @@
   <depend package="nav_msgs"/>
   <depend package="imu_filter_madgwick"/>
   <depend package="robot_pose_ekf"/>
+  <depend package="range_sensor_layer"/>
   
 </package>
 

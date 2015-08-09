@@ -7,7 +7,7 @@
 
 #include <Rover5_ROS/hardware_simulator.h>
 
-HWSim::HWSim():left_CMD(1),right_CMD(4),left_enc(0),right_enc(0),
+HWSim::HWSim():left_enc(0),right_enc(0),
 	XAccel(0),YAccel(0),ZAccel(0),XGyro(0),YGyro(0),ZGyro(0), ping(0),
 	lp_0(0), lp_1(0), rp_0(0), rp_1(0), lv_des(0), rv_des(0), lv_0(0),
 	lv_1(0), rv_0(0), rv_1(0), elapsed(0){
@@ -15,20 +15,16 @@ HWSim::HWSim():left_CMD(1),right_CMD(4),left_enc(0),right_enc(0),
 	now = ros::Time::now();
 	then = ros::Time::now();
 
-	nh_.param("axis_left", left_CMD, left_CMD);
-	nh_.param("axis_right", right_CMD, right_CMD);
-
 	//Subscribers
-	joy_sub = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &HWSim::JoyCallback, this);
+	twist_sub = nh_.subscribe("rover_cmd_vel", 10, &HWSim::TwistCallback, this);
 
 	//Publishers
 	rover_pub = nh_.advertise<Rover5_ROS::rover_out>("RoverMSGout", 10);
 }
 
-// joy position = desired velocity
-void HWSim::JoyCallback(const sensor_msgs::Joy::ConstPtr& joy){
-	lv_des = joy->axes[left_CMD] * max_vel;
-	rv_des = joy->axes[right_CMD] * max_vel;
+void HWSim::TwistCallback(const geometry_msgs::TwistWithCovariance& twist){
+	lv_des = (twist.twist.linear.x + ((width*twist.twist.angular.z)/2)) * max_vel;
+	rv_des = (twist.twist.linear.x - ((width*twist.twist.angular.z)/2)) * max_vel;
 }
 
 // check desired velocity against previous velocity, if different accelerate towards desired

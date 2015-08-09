@@ -16,11 +16,9 @@ Odometry::Odometry():
 
 	//Publishers
 	odom_pub = nHandle.advertise<nav_msgs::Odometry>("odom", 10);
-	rover_pub = nHandle.advertise<Rover5_ROS::rover_in>("RoverMSGin", 10);
 
 	//Subscribers
 	rover_sub = nHandle.subscribe<Rover5_ROS::rover_out>("RoverMSGout", 10, &Odometry::EncCallback, this);
-	twist_sub = nHandle.subscribe<geometry_msgs::TwistWithCovariance>("rover_cmd_vel", 10, &Odometry::Twist_To_Diff, this);
 }
 
 void Odometry::EncCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
@@ -28,27 +26,6 @@ void Odometry::EncCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	l_enc = msg->lPos;
 	r_enc = msg->rPos;
 	now = msg->header.stamp;
-}
-
-void Odometry::Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr& twist){
-	float r_duty_temp = twist->twist.linear.x + ((width*twist->twist.angular.z)/2);
-	float l_duty_temp = twist->twist.linear.x - ((width*twist->twist.angular.z)/2);
-
-	if(l_duty_temp<0){
-		rover_msg_in.lDirCmd = 0;
-	}else if(l_duty_temp>0){
-		rover_msg_in.lDirCmd = 1;
-	}
-	if(r_duty_temp<0){
-		rover_msg_in.rDirCmd = 0;
-	}else if((r_duty_temp>0)){
-		rover_msg_in.rDirCmd = 1;
-	}
-
-	rover_msg_in.lDutyCmd = abs(100*l_duty_temp);
-	rover_msg_in.rDutyCmd = abs(100*r_duty_temp);
-
-	rover_pub.publish(rover_msg_in);
 }
 
 void Odometry::Update_Odom(){
@@ -120,7 +97,6 @@ Odometry::~Odometry(){
 
 int main(int argc, char** argv){
 	ros::init(argc, argv, "rover5_odom");
-	Joy_TeleOp joy_teleop;
 	Odometry odom;
 
 	ros::Rate loop_rate(30);

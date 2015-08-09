@@ -9,7 +9,6 @@
 #define INCLUDE_ROVER5_ROS_ODOMETRY_H_
 
 #include <ros/ros.h>
-#include <geometry_msgs/TwistWithCovariance.h>
 #include <geometry_msgs/PoseWithCovariance.h>
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Point.h>
@@ -17,8 +16,6 @@
 #include <tf/transform_broadcaster.h>
 #include <limits.h>
 #include <Rover5_ROS/rover_out.h>
-#include <Rover5_ROS/rover_in.h>
-#include <Rover5_ROS/joy_teleop.h>
 #include <sensor_msgs/Range.h>
 
 #define ratio	1768		//encoder ticks per meter
@@ -32,7 +29,6 @@ public:
 
 private:
 	void EncCallback(const Rover5_ROS::rover_out::ConstPtr&);
-	void Twist_To_Diff(const geometry_msgs::TwistWithCovariance::ConstPtr&);
 
 	int rolloverMax, rolloverMin;				//encoder count roll over limits
 	double x,y,prev_x,prev_y;					//position and previous values to compute velocities
@@ -44,20 +40,16 @@ private:
 
 	tf::Quaternion tf_quaternion;
 	geometry_msgs::Quaternion msg_quaternion;	//quaternion for transform
-	Rover5_ROS::rover_in rover_msg_in;			//rover input object
 
 	//Publishers
 	ros::Publisher odom_pub;
-	ros::Publisher rover_pub;
 
 	//Subscribers
 	ros::Subscriber rover_sub;
-	ros::Subscriber twist_sub;
 
 	ros::NodeHandle nHandle;
 
 	nav_msgs::Odometry odom_msg;
-
 };
 
 #endif /* INCLUDE_ROVER5_ROS_ODOMETRY_H_ */

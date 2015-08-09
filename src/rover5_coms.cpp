@@ -2,8 +2,13 @@
 
 Rover5_Coms::Rover5_Coms():socket_desc(0),client_sock(0),c(0),read_size(0){
 	InitializeMessageData(msgSendData);
-	rover_pub = n.advertise<Rover5_ROS::rover_out>("RoverMSGout", 10);
+	//Publishers
+	rover_pub_out = n.advertise<Rover5_ROS::rover_out>("RoverMSGout", 10);
+	rover_pub_in = n.advertise<Rover5_ROS::rover_in>("RoverMSGin", 10);
+
+	//Subscribers
 	rover_sub = n.subscribe<Rover5_ROS::rover_in>("RoverMSGin", 10, &Rover5_Coms::PackSendData, this);
+	twist_sub = n.subscribe("rover_cmd_vel", 10, &Rover5_Coms::TwistCallback, this);
 }
 
 void Rover5_Coms::StartServer(){
@@ -64,7 +69,7 @@ int Rover5_Coms::Transmit(){
 		rover_msg_out.lPos = 0;
 		rover_msg_out.rPos = 0;
 
-		rover_pub.publish(rover_msg_out);
+		rover_pub_out.publish(rover_msg_out);
 
 		Listen();
 	}
@@ -84,7 +89,7 @@ int Rover5_Coms::UseMessageData(){
 	rover_msg_out.imuYGyro = msgRecvData.imuYGyro;
 	rover_msg_out.imuZGyro = msgRecvData.imuZGyro;
 
-	rover_pub.publish(rover_msg_out);
+	rover_pub_out.publish(rover_msg_out);
 
 	return 0;
 }
@@ -94,6 +99,27 @@ void Rover5_Coms::PackSendData(const Rover5_ROS::rover_in::ConstPtr& msg){
 	msgSendData.rDutyCmd = msg->rDutyCmd;
 	msgSendData.lDirCmd = msg->lDirCmd;
 	msgSendData.rDirCmd = msg->rDirCmd;
+}
+
+void Rover5_Coms::TwistCallback(const geometry_msgs::TwistWithCovariance& twist){
+	float r_duty_temp = twist.twist.linear.x + ((width*twist.twist.angular.z)/2);
+	float l_duty_temp = twist.twist.linear.x - ((width*twist.twist.angular.z)/2);
+
+	if(l_duty_temp<0){
+		rover_msg_in.lDirCmd = 0;
+	}else if(l_duty_temp>0){
+		rover_msg_in.lDirCmd = 1;
+	}
+	if(r_duty_temp<0){
+		rover_msg_in.rDirCmd = 0;
+	}else if((r_duty_temp>0)){
+		rover_msg_in.rDirCmd = 1;
+	}
+
+	rover_msg_in.lDutyCmd = abs(100*l_duty_temp);
+	rover_msg_in.rDutyCmd = abs(100*r_duty_temp);
+
+	rover_pub_in.publish(rover_msg_in);
 }
 
 Rover5_Coms::~Rover5_Coms(){

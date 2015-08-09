@@ -11,11 +11,14 @@
 #include <ros/ros.h>
 #include <iostream>
 #include "Rover5_ROS/Rover5Coms.h"
+#include <geometry_msgs/TwistWithCovariance.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "Rover5_ROS/rover_out.h"
 #include "Rover5_ROS/rover_in.h"
+
+#define width	0.1905		//robot width in meters
 
 class Rover5_Coms{
 public:
@@ -27,9 +30,15 @@ public:
 private:
 	int UseMessageData();
 	void PackSendData(const Rover5_ROS::rover_in::ConstPtr&);
+	void TwistCallback(const geometry_msgs::TwistWithCovariance& twist);
 
-	ros::Publisher rover_pub;
+	//Publishers
+	ros::Publisher rover_pub_out;
+	ros::Publisher rover_pub_in;
+
+	//Subscribers
 	ros::Subscriber rover_sub;
+	ros::Subscriber twist_sub;
 
 	ros::NodeHandle n;
 
