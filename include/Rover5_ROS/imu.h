@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <Rover5_ROS/rover_out.h>
+#include <Rover5_ROS/rover5_param.h>
 
 class IMU{
 public:

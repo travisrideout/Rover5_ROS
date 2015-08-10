@@ -37,7 +37,7 @@ int main(int argc, char** argv){
 	ros::init(argc, argv, "rover5_map");
 	Map map;
 
-	ros::Rate loop_rate(30);
+	ros::Rate loop_rate(FREQUENCY);
 
 	while(ros::ok()){
 		map.Update_Map();

@@ -102,8 +102,8 @@ void Rover5_Coms::PackSendData(const Rover5_ROS::rover_in::ConstPtr& msg){
 }
 
 void Rover5_Coms::TwistCallback(const geometry_msgs::TwistWithCovariance& twist){
-	float r_duty_temp = twist.twist.linear.x + ((width*twist.twist.angular.z)/2);
-	float l_duty_temp = twist.twist.linear.x - ((width*twist.twist.angular.z)/2);
+	float r_duty_temp = twist.twist.linear.x + ((WIDTH*twist.twist.angular.z)/2);
+	float l_duty_temp = twist.twist.linear.x - ((WIDTH*twist.twist.angular.z)/2);
 
 	if(l_duty_temp<0){
 		rover_msg_in.lDirCmd = 0;
@@ -135,7 +135,7 @@ int main(int argc, char** argv){
 	coms.StartServer();
 	coms.Listen();
 
-	ros::Rate loop_rate(30);
+	ros::Rate loop_rate(FREQUENCY);
 	while(ros::ok()){
 		coms.Transmit();
 		loop_rate.sleep();

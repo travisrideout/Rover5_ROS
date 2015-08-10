@@ -23,8 +23,8 @@ HWSim::HWSim():left_enc(0),right_enc(0),
 }
 
 void HWSim::TwistCallback(const geometry_msgs::TwistWithCovariance& twist){
-	lv_des = (twist.twist.linear.x + ((width*twist.twist.angular.z)/2)) * max_vel;
-	rv_des = (twist.twist.linear.x - ((width*twist.twist.angular.z)/2)) * max_vel;
+	lv_des = (twist.twist.linear.x + ((WIDTH*twist.twist.angular.z)/2)) * max_vel;
+	rv_des = (twist.twist.linear.x - ((WIDTH*twist.twist.angular.z)/2)) * max_vel;
 }
 
 // check desired velocity against previous velocity, if different accelerate towards desired
@@ -68,8 +68,8 @@ void HWSim::OdomSim(){
 	rp_0 = rp_1 + rv_0*elapsed;
 
 	//set encoder counts
-	left_enc = (int)(lp_0 * enc_ratio);
-	right_enc = (int)(rp_0 * enc_ratio);
+	left_enc = (int)(lp_0 * ENC_RATIO);
+	right_enc = (int)(rp_0 * ENC_RATIO);
 }
 
 // x acceleration = average accel of tracks = change in vel/elapsed time
@@ -80,7 +80,7 @@ void HWSim::IMUSim(){
 	ZAccel = 1 * accel_scalar;	// 1g, gravity
 	XGyro = 0;
 	YGyro = 0;
-	double angle = asin(((lp_0-lp_1)-(rp_0-rp_1))/width)*(180/M_PI);	//converted to degrees
+	double angle = asin(((lp_0-lp_1)-(rp_0-rp_1))/WIDTH)*(180/M_PI);	//converted to degrees
 	ZGyro = (angle/elapsed)*gyro_scalar;
 }
 
@@ -129,7 +129,7 @@ int main(int argc, char** argv){
 
 	std::cout << "Hardware Simulator node started" << std::endl;
 
-	ros::Rate loop_rate(frequency);
+	ros::Rate loop_rate(FREQUENCY);
 
 	while(ros::ok()){
 		sim.RoverMSG();

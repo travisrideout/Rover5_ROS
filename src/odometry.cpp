@@ -33,13 +33,13 @@ void Odometry::Update_Odom(){
 		elapsed = (now-then).toSec();
 
 		//calculate odometry
-		double d_left = (double(l_enc) - prev_l_enc)/ratio;		//distance traveled by each track
-		double d_right = (double(r_enc) - prev_r_enc)/ratio;
+		double d_left = (double(l_enc) - prev_l_enc)/ENC_RATIO;		//distance traveled by each track
+		double d_right = (double(r_enc) - prev_r_enc)/ENC_RATIO;
 
 		//distance traveled is the average of the two wheels
 		double d = ( d_left + d_right ) / 2;
 		//this approximation works (in radians) for small angles
-		double th_temp = ( d_right - d_left ) / (2*width);			//divide by 2 to reduce errors in theta
+		double th_temp = ( d_right - d_left ) / (2*WIDTH);			//divide by 2 to reduce errors in theta
 
 		//calculate velocities
 		dx = d / elapsed;
@@ -99,7 +99,7 @@ int main(int argc, char** argv){
 	ros::init(argc, argv, "rover5_odom");
 	Odometry odom;
 
-	ros::Rate loop_rate(30);
+	ros::Rate loop_rate(FREQUENCY);
 
 	while(ros::ok()){
 		odom.Update_Odom();

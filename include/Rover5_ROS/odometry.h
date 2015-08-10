@@ -17,9 +17,7 @@
 #include <limits.h>
 #include <Rover5_ROS/rover_out.h>
 #include <sensor_msgs/Range.h>
-
-#define ratio	1768		//encoder ticks per meter
-#define width	0.1905		//robot width in meters
+#include <Rover5_ROS/rover5_param.h>
 
 class Odometry{
 public:

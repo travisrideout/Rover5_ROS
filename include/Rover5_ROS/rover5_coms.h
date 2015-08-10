@@ -10,15 +10,14 @@
 
 #include <ros/ros.h>
 #include <iostream>
-#include "Rover5_ROS/Rover5Coms.h"
+#include <Rover5_ROS/Rover5Coms.h>
 #include <geometry_msgs/TwistWithCovariance.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "Rover5_ROS/rover_out.h"
-#include "Rover5_ROS/rover_in.h"
-
-#define width	0.1905		//robot width in meters
+#include <Rover5_ROS/rover_out.h>
+#include <Rover5_ROS/rover_in.h>
+#include <Rover5_ROS/rover5_param.h>
 
 class Rover5_Coms{
 public:

@@ -44,7 +44,7 @@ int main(int argc, char** argv){
 
 	Sonar sonar;
 
-	ros::Rate loop_rate(30);
+	ros::Rate loop_rate(FREQUENCY);
 	while(ros::ok()){
 		loop_rate.sleep();
 		ros::spinOnce();

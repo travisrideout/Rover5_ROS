@@ -14,6 +14,7 @@
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Point.h>
 #include <tf/transform_broadcaster.h>
+#include <Rover5_ROS/rover5_param.h>
 
 class Map{
 public:

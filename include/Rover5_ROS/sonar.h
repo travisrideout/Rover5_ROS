@@ -13,6 +13,7 @@
 #include <geometry_msgs/Quaternion.h>
 #include <Rover5_ROS/rover_out.h>
 #include <sensor_msgs/Range.h>
+#include <Rover5_ROS/rover5_param.h>
 
 class Sonar
 {

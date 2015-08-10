@@ -83,7 +83,7 @@ void Joy_TeleOp::JoyCallback(const sensor_msgs::Joy& unordered_joy) {
 void Joy_TeleOp::SetTwist(){
 	geometry_msgs::TwistWithCovariance twist;
 	twist.twist.linear.x = (joy_msg.axes[T_Y_AXIS] + joy_msg.axes[R_X_AXIS])/2;
-	twist.twist.angular.z = (joy_msg.axes[T_Y_AXIS] - joy_msg.axes[R_X_AXIS])/width;		//right hand rule: counter clock wise is positive
+	twist.twist.angular.z = (joy_msg.axes[T_Y_AXIS] - joy_msg.axes[R_X_AXIS])/WIDTH;		//right hand rule: counter clock wise is positive
 
 	//Publish Twist
 	vel_pub.publish(twist);
@@ -97,7 +97,7 @@ int main(int argc, char** argv){
 	ros::init(argc, argv, "rover5_joy");
 	Joy_TeleOp joy_teleop;
 
-	ros::Rate loop_rate(30);
+	ros::Rate loop_rate(FREQUENCY);
 
 	while(ros::ok()){
 		ros::spinOnce();

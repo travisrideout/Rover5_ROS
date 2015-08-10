@@ -23,14 +23,14 @@ void IMU::IMUCallback(const Rover5_ROS::rover_out::ConstPtr& msg){
 	float gx_f, gy_f, gz_f;
 
 	// +/-4g scale converted to m/s^2
-	ax_f =((float) msg->imuXAccel) / (8192.0f / 9.807);
-	ay_f =((float) msg->imuYAccel) / (8192.0f / 9.807);
-	az_f =((float) msg->imuZAccel) / (8192.0f / 9.807);
+	ax_f =((float) msg->imuXAccel) / ((SIGNED_16/4.0f) / GRAVITY);
+	ay_f =((float) msg->imuYAccel) / ((SIGNED_16/4.0f) / GRAVITY);
+	az_f =((float) msg->imuZAccel) / ((SIGNED_16/4.0f) / GRAVITY);
 
 	// +/-250 degrees/s scale converted to rad/s
-	gx_f=((float) msg->imuXGyro) / (131.072f / (M_PI/180.0));
-	gy_f=((float) msg->imuYGyro) / (131.072f / (M_PI/180.0));
-	gz_f=((float) msg->imuZGyro) / (131.072f / (M_PI/180.0));
+	gx_f=((float) msg->imuXGyro) / ((SIGNED_16/250.0f) / (M_PI/180.0));
+	gy_f=((float) msg->imuYGyro) / ((SIGNED_16/250.0f) / (M_PI/180.0));
+	gz_f=((float) msg->imuZGyro) / ((SIGNED_16/250.0f) / (M_PI/180.0));
 
 	//deadband
 
@@ -71,7 +71,7 @@ int main(int argc, char** argv){
 
 	IMU imu;
 
-	ros::Rate loop_rate(30);
+	ros::Rate loop_rate(FREQUENCY);
 
 	while(ros::ok()){
 		ros::spinOnce();

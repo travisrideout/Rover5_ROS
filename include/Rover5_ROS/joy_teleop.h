@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/TwistWithCovariance.h>
+#include <Rover5_ROS/rover5_param.h>
 
 #define JOY_NUM_AXES			11
 #define JOY_NUM_BUTTONS			8
@@ -42,8 +43,6 @@
 
 #define GENERIC_JOY_NUM_AXES		9
 #define GENERIC_JOY_NUM_BUTTONS		24
-
-#define	width	0.1905
 
 class Joy_TeleOp
 {
